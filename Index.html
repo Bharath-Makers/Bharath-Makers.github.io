@@ -1,0 +1,351 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Bharath Raj — Design to Deploy</title>
+<meta name="description" content="Bharath Raj P — AI & Data Science undergrad, Chennai. Figma-first interface design and Flask-on-AWS deployment. Two projects, one habit: build the whole thing." />
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@600;700;800&family=Plus+Jakarta+Sans:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
+  tailwind.config = {
+    theme: {
+      extend: {
+        colors: {
+          obsidian: '#060608', charcoal: '#0E0F14',
+          gold: '#D4AF37', goldl: '#F5D061',
+          cobalt: '#00A3FF', cobaltd: '#2563EB',
+          alabaster: '#F4F4F6', mist: '#8E92A4'
+        },
+        fontFamily: {
+          display: ['Syne', 'sans-serif'],
+          sans: ['"Plus Jakarta Sans"', 'sans-serif'],
+          mono: ['"JetBrains Mono"', 'monospace']
+        }
+      }
+    }
+  }
+</script>
+
+<style>
+  :root{ --gold:#D4AF37; --goldl:#F5D061; --cobalt:#00A3FF; }
+  html{background:#060608;} body{overflow-x:hidden;}
+  ::selection{background:rgba(212,175,55,.28);color:#F4F4F6;}
+
+  ::-webkit-scrollbar{width:8px;}
+  ::-webkit-scrollbar-track{background:#060608;}
+  ::-webkit-scrollbar-thumb{background:#1c1a13;border-radius:99px;}
+  ::-webkit-scrollbar-thumb:hover{background:#2a2618;}
+
+  .noise{position:fixed;inset:0;z-index:70;pointer-events:none;opacity:.045;
+    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='240' height='240'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='240' height='240' filter='url(%23n)'/%3E%3C/svg%3E");
+    mix-blend-mode:overlay;}
+  .hairline{border:1px solid rgba(212,175,55,0.2);}
+  .hairline-blue{border:1px solid rgba(0,163,255,0.22);}
+
+  .gold-text{background:linear-gradient(100deg,#B8952B 0%,#D4AF37 22%,#F5D061 46%,#D4AF37 72%,#8E701F 100%);
+    -webkit-background-clip:text;background-clip:text;color:transparent;}
+  .grid-bg{background-image:linear-gradient(rgba(212,175,55,.055) 1px,transparent 1px),linear-gradient(90deg,rgba(212,175,55,.055) 1px,transparent 1px);background-size:84px 84px;}
+  .grid-mask{-webkit-mask-image:radial-gradient(ellipse 78% 62% at 50% 42%,#000 28%,transparent 74%);
+    mask-image:radial-gradient(ellipse 78% 62% at 50% 42%,#000 28%,transparent 74%);}
+
+  #spotlight{position:fixed;top:0;left:0;width:560px;height:560px;z-index:5;pointer-events:none;opacity:0;will-change:transform;
+    background:radial-gradient(circle at center,rgba(212,175,55,.15) 0%,rgba(0,163,255,.09) 42%,transparent 68%);
+    filter:blur(26px);transition:opacity .5s ease;}
+  #dot{position:fixed;top:0;left:0;width:7px;height:7px;z-index:80;border-radius:999px;background:#F5D061;pointer-events:none;opacity:0;
+    box-shadow:0 0 14px rgba(245,208,97,.8);transition:opacity .4s ease,width .25s ease,height .25s ease;}
+  #dot.is-link{width:34px;height:34px;background:transparent;border:1px solid rgba(245,208,97,.75);}
+  @media (hover:none),(pointer:coarse){#dot,#spotlight{display:none;}}
+
+  .mask{display:block;overflow:hidden;}
+  .mask > span{display:block;will-change:transform;}
+
+  #monoSpin{width:clamp(108px,18vw,230px);height:clamp(108px,18vw,230px);transform-style:preserve-3d;transform:rotateX(58deg) rotateZ(-38deg);}
+  .plate{position:absolute;inset:0;border:1px solid rgba(212,175,55,.34);
+    background:linear-gradient(135deg,rgba(212,175,55,.10),rgba(14,15,20,.9) 52%,rgba(0,163,255,.07));
+    box-shadow:inset 0 0 46px rgba(212,175,55,.05);will-change:transform,opacity;}
+  .plate::after{content:'';position:absolute;inset:9px;border:1px solid rgba(212,175,55,.12);}
+
+  .module{width:clamp(128px,22vw,244px);will-change:transform,opacity;}
+  .m-tl{left:6%;top:17%;} .m-tr{right:6%;top:13%;} .m-br{right:8%;bottom:16%;} .m-bl{left:8%;bottom:20%;}
+
+  .glass{background:linear-gradient(160deg,rgba(14,15,20,.88),rgba(6,6,8,.62));
+    -webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px);
+    border:1px solid rgba(212,175,55,.2);box-shadow:0 18px 50px -18px rgba(0,0,0,.9);}
+  .glass-gold{border-color:rgba(245,208,97,.5);
+    box-shadow:0 0 0 1px rgba(245,208,97,.08),0 0 42px -8px rgba(212,175,55,.35),0 18px 50px -18px rgba(0,0,0,.9);}
+  .glass-blue{border-color:rgba(0,163,255,.4);
+    box-shadow:0 0 42px -12px rgba(0,163,255,.4),0 18px 50px -18px rgba(0,0,0,.9);}
+
+  .leader{will-change:stroke-dashoffset;}
+
+  @media (max-width:640px){
+    .module{width:42vw;}
+    .m-tl{left:4%;top:12%;} .m-tr{right:4%;top:23%;} .m-br{right:4%;bottom:26%;} .m-bl{left:4%;bottom:11%;}
+    .module .desc{display:none;}
+  }
+
+  .tilt-wrap{perspective:1100px;}
+  .tilt-inner{transform-style:preserve-3d;will-change:transform;}
+  .card-open .tilt-inner{transform:none !important;}
+
+  .link-underline{position:relative;}
+  .link-underline::after{content:'';position:absolute;left:0;bottom:-3px;height:1px;width:100%;
+    background:linear-gradient(90deg,#D4AF37,#00A3FF);transform:scaleX(0);transform-origin:left;
+    transition:transform .45s cubic-bezier(.19,1,.22,1);}
+  .link-underline:hover::after{transform:scaleX(1);}
+
+  @media (prefers-reduced-motion:reduce){
+    html{scroll-behavior:auto;}
+    *{animation-duration:.001ms !important;transition-duration:.001ms !important;}
+  }
+</style>
+</head>
+
+<body class="bg-obsidian text-alabaster font-sans antialiased selection:bg-gold/30">
+
+  <div class="noise"></div>
+  <div id="spotlight"></div>
+  <div id="dot"></div>
+
+  <div class="fixed top-0 left-0 right-0 h-[2px] z-[75] bg-white/5">
+    <div id="progress" class="h-full w-full origin-left scale-x-0" style="background:linear-gradient(90deg,#D4AF37,#F5D061 40%,#00A3FF);"></div>
+  </div>
+
+  <!-- ============ NAV ============ -->
+  <header class="fixed inset-x-0 top-0 z-[65]">
+    <div class="flex items-center justify-between px-5 md:px-10 py-4 font-mono text-[10px] tracking-[0.28em] text-mist/70">
+      <a href="#top" class="text-alabaster/90 hover:text-goldl transition-colors" data-cursor="link">B.RAJ<span class="text-gold">.</span></a>
+      <nav class="hidden sm:flex items-center gap-6 md:gap-9">
+        <a href="#about" class="hover:text-alabaster transition-colors" data-cursor="link">POV</a>
+        <a href="#core" class="hover:text-alabaster transition-colors" data-cursor="link">CORE</a>
+        <a href="#work" class="hover:text-alabaster transition-colors" data-cursor="link">WORK</a>
+        <a href="#path" class="hover:text-alabaster transition-colors" data-cursor="link">PATH</a>
+      </nav>
+      <a href="#contact" class="hairline rounded-full px-3 py-1.5 text-goldl/90 hover:bg-gold/10 transition-colors" data-cursor="link">CONTACT</a>
+    </div>
+  </header>
+
+  <!-- ============ HERO ============ -->
+  <section id="top" class="relative min-h-[100svh] flex flex-col justify-between px-5 md:px-10 pt-28 pb-8 overflow-hidden">
+    <div class="absolute inset-0 grid-bg grid-mask opacity-80 pointer-events-none"></div>
+    <div class="absolute -top-40 left-1/2 -translate-x-1/2 h-[520px] w-[520px] rounded-full pointer-events-none"
+         style="background:radial-gradient(circle,rgba(212,175,55,.10),transparent 65%);filter:blur(40px)"></div>
+
+    <div class="hero-meta relative z-10 flex flex-wrap items-start justify-between gap-4 font-mono text-[10px] leading-relaxed tracking-[0.22em] text-mist/60">
+      <div>
+        <div class="text-goldl/80">CHENNAI, IN</div>
+        <div>13.0827°N / 80.2707°E</div>
+      </div>
+      <div class="text-right">
+        <div class="text-cobalt/80">AI &amp; DATA SCIENCE</div>
+        <div>B.TECH · 2022—2026</div>
+      </div>
+    </div>
+
+    <div class="relative z-10 py-10">
+      <h1 class="font-display font-extrabold leading-[0.82] tracking-[-0.03em] text-[clamp(3.2rem,13vw,11.5rem)]">
+        <span class="mask"><span class="reveal">BHARATH</span></span>
+        <span class="mask"><span class="reveal gold-text">RAJ<span class="text-alabaster">.</span></span></span>
+      </h1>
+
+      <div class="hero-sub mt-8 grid md:grid-cols-12 gap-6 items-end">
+        <p class="md:col-span-6 md:col-start-1 max-w-xl text-[15px] md:text-base leading-relaxed text-mist">
+          I design for the person who&rsquo;s never used an app before &mdash; then I ship the backend
+          that has to stay up when they open it.
+        </p>
+        <div class="md:col-span-4 md:col-start-9 md:text-right font-mono text-[10px] tracking-[0.24em] text-mist/60">
+          <div class="inline-flex items-center gap-2">
+            <span class="h-1.5 w-1.5 rounded-full bg-cobalt animate-pulse"></span>
+            <span>OPEN TO 2026 ROLES</span>
+          </div>
+          <div class="mt-1.5 text-mist/40">FULL-STACK · PRODUCT ENGINEERING</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="hero-foot relative z-10 flex items-end justify-between font-mono text-[10px] tracking-[0.24em] text-mist/45">
+      <div class="flex items-center gap-3">
+        <span class="block h-8 w-px bg-gradient-to-b from-gold/60 to-transparent"></span>
+        <span>SCROLL TO DISASSEMBLE</span>
+      </div>
+      <div class="hidden sm:block text-right">FIGMA → HTML → FLASK → EC2 → RDS</div>
+    </div>
+  </section>
+
+  <!-- ============ MARQUEE ============ -->
+  <div class="relative border-y border-gold/10 py-3 overflow-hidden bg-charcoal/40">
+    <div class="flex whitespace-nowrap font-mono text-[10px] tracking-[0.36em] text-mist/35" id="marquee">
+      <span class="px-6">FIGMA</span><span class="px-6 text-gold/40">/</span>
+      <span class="px-6">HTML</span><span class="px-6 text-gold/40">/</span>
+      <span class="px-6">FLASK</span><span class="px-6 text-cobalt/40">/</span>
+      <span class="px-6">AWS EC2</span><span class="px-6 text-cobalt/40">/</span>
+      <span class="px-6">AWS RDS</span><span class="px-6 text-gold/40">/</span>
+      <span class="px-6">MYSQL</span><span class="px-6 text-gold/40">/</span>
+      <span class="px-6">CORE JAVA</span><span class="px-6 text-cobalt/40">/</span>
+      <span class="px-6">PYTHON</span><span class="px-6 text-gold/40">/</span>
+      <span class="px-6">FIGMA</span><span class="px-6 text-gold/40">/</span>
+      <span class="px-6">HTML</span><span class="px-6 text-gold/40">/</span>
+      <span class="px-6">FLASK</span><span class="px-6 text-cobalt/40">/</span>
+      <span class="px-6">AWS EC2</span><span class="px-6 text-cobalt/40">/</span>
+      <span class="px-6">AWS RDS</span><span class="px-6 text-gold/40">/</span>
+      <span class="px-6">MYSQL</span><span class="px-6 text-gold/40">/</span>
+      <span class="px-6">CORE JAVA</span><span class="px-6 text-cobalt/40">/</span>
+      <span class="px-6">PYTHON</span><span class="px-6 text-gold/40">/</span>
+    </div>
+  </div>
+
+  <!-- ============ ABOUT / POV ============ -->
+  <section id="about" class="relative px-5 md:px-10 py-24 md:py-36">
+    <div class="grid md:grid-cols-12 gap-10 md:gap-8">
+
+      <div class="md:col-span-7" data-reveal>
+        <div class="font-mono text-[10px] tracking-[0.3em] text-goldl/70 mb-8">01 / POINT OF VIEW</div>
+        <h2 class="font-display font-bold leading-[1.02] tracking-[-0.02em] text-[clamp(1.9rem,4.4vw,3.6rem)]">
+          Two projects.<br/>
+          One habit:<br/>
+          <span class="gold-text">build the whole thing.</span>
+        </h2>
+        <div class="mt-10 max-w-xl space-y-5 text-[15px] leading-relaxed text-mist">
+          <p>
+            I&rsquo;m an AI &amp; Data Science undergrad at Panimalar Engineering College, Chennai. My work
+            sits on both sides of the handoff &mdash; the Figma frame a farmer can read at arm&rsquo;s length,
+            and the Flask service that has to answer the moment they tap it.
+          </p>
+          <p>
+            I like the part nobody screenshots: security groups, connection strings, environment config,
+            and the deploy that finally stays green.
+          </p>
+        </div>
+
+        <div class="mt-10 flex flex-wrap gap-2 font-mono text-[10px] tracking-[0.18em] text-mist/60">
+          <span class="hairline rounded-full px-3 py-1.5">CORE JAVA</span>
+          <span class="hairline rounded-full px-3 py-1.5">PYTHON</span>
+          <span class="hairline rounded-full px-3 py-1.5">MYSQL</span>
+          <span class="hairline rounded-full px-3 py-1.5">HTML</span>
+          <span class="hairline-blue rounded-full px-3 py-1.5 text-cobalt/80">FLASK</span>
+          <span class="hairline-blue rounded-full px-3 py-1.5 text-cobalt/80">AWS EC2 / RDS</span>
+          <span class="hairline rounded-full px-3 py-1.5">FIGMA</span>
+        </div>
+      </div>
+
+      <div class="md:col-span-5 md:pl-6" data-reveal>
+        <div class="grid grid-cols-2 gap-3">
+          <div class="hairline rounded-lg p-5 bg-charcoal/60">
+            <div class="font-mono text-[9px] tracking-[0.24em] text-mist/50">CGPA</div>
+            <div class="mt-3 font-display text-4xl md:text-5xl font-bold gold-text">
+              <span data-count="8.3" data-decimals="1">0.0</span>
+            </div>
+            <div class="mt-1 font-mono text-[9px] tracking-[0.18em] text-mist/40">/ 10.0</div>
+          </div>
+
+          <div class="hairline rounded-lg p-5 bg-charcoal/60">
+            <div class="font-mono text-[9px] tracking-[0.24em] text-mist/50">SHIPPED</div>
+            <div class="mt-3 font-display text-4xl md:text-5xl font-bold text-alabaster">
+              <span data-count="2">00</span>
+            </div>
+            <div class="mt-1 font-mono text-[9px] tracking-[0.18em] text-mist/40">/ PROJECTS</div>
+          </div>
+
+          <div class="hairline rounded-lg p-5 bg-charcoal/60">
+            <div class="font-mono text-[9px] tracking-[0.24em] text-mist/50">CERTIFIED</div>
+            <div class="mt-3 font-display text-4xl md:text-5xl font-bold text-alabaster">
+              <span data-count="3">00</span>
+            </div>
+            <div class="mt-1 font-mono text-[9px] tracking-[0.18em] text-mist/40">/ PROGRAMS</div>
+          </div>
+
+          <div class="hairline-blue rounded-lg p-5 bg-charcoal/60">
+            <div class="font-mono text-[9px] tracking-[0.24em] text-cobalt/60">CORE</div>
+            <div class="mt-3 font-display text-4xl md:text-5xl font-bold text-cobalt">
+              <span data-count="4">00</span>
+            </div>
+            <div class="mt-1 font-mono text-[9px] tracking-[0.18em] text-mist/40">/ PILLARS</div>
+          </div>
+        </div>
+
+        <div class="mt-3 hairline rounded-lg p-5 bg-charcoal/40">
+          <div class="font-mono text-[9px] tracking-[0.24em] text-mist/50 mb-2">BASED IN</div>
+          <div class="text-sm text-alabaster/90">Chennai, Tamil Nadu &mdash; India</div>
+          <div class="mt-1 font-mono text-[10px] text-mist/40">TAMIL · ENGLISH · HINDI</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ CORE DISSECTION ============ -->
+  <section id="core" class="relative" style="height:350vh">
+    <div class="sticky top-0 h-[100svh] w-full overflow-hidden">
+      <div class="absolute inset-0 grid-bg grid-mask opacity-50 pointer-events-none"></div>
+
+      <div class="absolute inset-x-0 top-0 z-20 flex items-start justify-between px-5 md:px-10 pt-20 md:pt-24 font-mono text-[10px] tracking-[0.26em] text-mist/50">
+        <span>02 / CORE DISSECTION</span>
+        <span class="text-goldl/60 hidden sm:block">SCROLL &rarr; SEPARATE</span>
+      </div>
+
+      <div class="absolute inset-0" id="stage">
+        <svg class="absolute inset-0 h-full w-full" viewBox="0 0 100 100" preserveAspectRatio="none" fill="none" aria-hidden="true">
+          <path class="leader" pathLength="100" stroke-dasharray="100" stroke-dashoffset="100"
+                d="M44,44 C38,42 34,38 28,34" stroke="rgba(212,175,55,.5)" stroke-width="1.5" vector-effect="non-scaling-stroke"/>
+          <path class="leader" pathLength="100" stroke-dasharray="100" stroke-dashoffset="100"
+                d="M56,44 C62,42 66,38 72,32" stroke="rgba(0,163,255,.5)" stroke-width="1.5" vector-effect="non-scaling-stroke"/>
+          <path class="leader" pathLength="100" stroke-dasharray="100" stroke-dashoffset="100"
+                d="M56,56 C62,58 66,62 72,66" stroke="rgba(245,208,97,.6)" stroke-width="1.5" vector-effect="non-scaling-stroke"/>
+          <path class="leader" pathLength="100" stroke-dasharray="100" stroke-dashoffset="100"
+                d="M44,56 C38,58 34,62 28,68" stroke="rgba(0,163,255,.45)" stroke-width="1.5" vector-effect="non-scaling-stroke"/>
+        </svg>
+
+        <div class="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 h-[380px] w-[380px] rounded-full pointer-events-none"
+             style="background:radial-gradient(circle,rgba(212,175,55,.14),rgba(0,163,255,.06) 45%,transparent 68%);filter:blur(36px)"></div>
+
+        <div class="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2">
+          <div id="monoSpin">
+            <div class="plate"></div><div class="plate"></div><div class="plate"></div><div class="plate"></div>
+          </div>
+        </div>
+
+        <!-- 01 INTERFACE -->
+        <div class="module m-tl absolute z-10">
+          <div class="font-mono text-[9px] tracking-[0.3em] text-goldl/70 mb-2">[ 01 ]</div>
+          <div class="glass rounded-md p-3 md:p-4">
+            <div class="font-display text-[13px] md:text-sm font-bold tracking-tight text-alabaster">INTERFACE</div>
+            <div class="font-mono text-[8px] md:text-[9px] tracking-[0.2em] text-gold/60 mt-1">&amp; DESIGN</div>
+            <p class="desc mt-3 text-[10px] md:text-[11px] leading-relaxed text-mist/80">
+              Figma-first. Information architecture, tap-target discipline, high-contrast surfaces for
+              sunlight and one-handed use.
+            </p>
+            <div class="mt-3 flex flex-wrap gap-1 font-mono text-[8px] tracking-[0.14em] text-mist/50">
+              <span class="border border-white/10 rounded px-1.5 py-0.5">FIGMA</span>
+              <span class="border border-white/10 rounded px-1.5 py-0.5">HTML</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- 02 LOGIC -->
+        <div class="module m-tr absolute z-10">
+          <div class="font-mono text-[9px] tracking-[0.3em] text-cobalt/70 mb-2">[ 02 ]</div>
+          <div class="glass glass-blue rounded-md p-3 md:p-4">
+            <div class="font-display text-[13px] md:text-sm font-bold tracking-tight text-alabaster">LOGIC</div>
+            <div class="font-mono text-[8px] md:text-[9px] tracking-[0.2em] text-cobalt/70 mt-1">&amp; BACKEND</div>
+            <p class="desc mt-3 text-[10px] md:text-[11px] leading-relaxed text-mist/80">
+              Request handling, routing and data models &mdash; written to be read by whoever inherits
+              the repo next.
+            </p>
+            <div class="mt-3 flex flex-wrap gap-1 font-mono text-[8px] tracking-[0.14em] text-mist/50">
+              <span class="border border-white/10 rounded px-1.5 py-0.5">JAVA</span>
+              <span class="border border-white/10 rounded px-1.5 py-0.5">PYTHON</span>
+              <span class="border border-white/10 rounded px-1.5 py-0.5">FLASK</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- 03 CLOUD — SIGNATURE (gold) -->
+        <div class="module m-br absolute z-10">
+          <div class="font-mono text-[9px] tracking-[0.3em] text-goldl/80 mb-2">[ 03 ] &mdash; SIGNATURE</div>
+          <div class="glass glass-gold rounded-md p-3 md:p-4">
+            <div class="font-display text-[13px] md:text-sm font-bold tracking-tight gold-text">CLOUD</div>
+            <div class="font-mono text-[8px] md:text-[9px] tracking-[0.2em] text-goldl/70 mt-1">&amp; DEPLOY</d
